@@ -1,0 +1,6 @@
+plugins {
+    id("com.android.application") version "8.5.0" apply false
+    id("org.jetbrains.kotlin.android") version "2.0.0" apply false
+    id("com.google.gms.google-services") version "4.4.2" apply false  // ← TAMBAH
+    alias(libs.plugins.compose.compiler) apply false
+}
