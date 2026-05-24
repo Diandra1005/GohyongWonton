@@ -23,6 +23,59 @@
           }
         },
         {
+          "client_id": "649591786782-c0t7k29av6rp0qmcal0thnknsieagcts.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gohyongwonton",
+            "certificate_hash": "6a5974fe3270fab3917225aedc6b1c804e22d31b"
+          }
+        },
+        {
+          "client_id": "649591786782-ethlhpqci464jngnqck6l31cj8mt0sn7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDC9ZzbEuRYEdyUafYH0W2XM2wTFe7J43s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "649591786782-ethlhpqci464jngnqck6l31cj8mt0sn7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:649591786782:android:046fc4f1bbe48ce70b4d0f",
+        "android_client_info": {
+          "package_name": "com.example.gohyongwontonadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "649591786782-1mpdlmn8cnqug1bavdtl7pujgs2k9sg3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gohyongwontonadmin",
+            "certificate_hash": "96470615e6ae42a2356d4229b1c0d119e3ab3cbb"
+          }
+        },
+        {
+          "client_id": "649591786782-teuoldb2g68f95bdb3ivqpg6sd3augpb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gohyongwontonadmin",
+            "certificate_hash": "6a5974fe3270fab3917225aedc6b1c804e22d31b"
+          }
+        },
+        {
           "client_id": "649591786782-ethlhpqci464jngnqck6l31cj8mt0sn7.apps.googleusercontent.com",
           "client_type": 3
         }
