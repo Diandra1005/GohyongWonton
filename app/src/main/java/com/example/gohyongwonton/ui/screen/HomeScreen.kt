@@ -29,7 +29,8 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onNavigateToCart: () -> Unit,
     onNavigateToDetail: (String) -> Unit,
-    onNavigateToOrders: () -> Unit
+    onNavigateToOrders: () -> Unit,
+    onNavigateToProfile: () -> Unit          // ← tambahan
 ) {
     val cartItems        by viewModel.cartItems.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
@@ -55,15 +56,28 @@ fun HomeScreen(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Gohyong & Wonton 🥟", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                        Text("Madiun, Jawa Timur", fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            "Gohyong & Wonton 🥟",
+                            fontWeight = FontWeight.Bold,
+                            fontSize   = 18.sp
+                        )
+                        Text(
+                            "Madiun, Jawa Timur",
+                            fontSize = 12.sp,
+                            color    = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 },
                 actions = {
+                    // ── Ikon Profil ──────────────────────────────────
+                    IconButton(onClick = onNavigateToProfile) {
+                        Icon(Icons.Default.AccountCircle, contentDescription = "Profil")
+                    }
+                    // ── Ikon Pesanan ─────────────────────────────────
                     IconButton(onClick = onNavigateToOrders) {
                         Icon(Icons.Default.List, contentDescription = "Pesanan")
                     }
+                    // ── Ikon Keranjang ───────────────────────────────
                     BadgedBox(badge = {
                         if (cartCount > 0) Badge { Text("$cartCount") }
                     }) {
@@ -79,17 +93,19 @@ fun HomeScreen(
         }
     ) { padding ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
             contentPadding = PaddingValues(bottom = 80.dp)
         ) {
-            // Search Bar
+            // ── Search Bar ──────────────────────────────────────────
             item {
                 OutlinedTextField(
-                    value = searchQuery,
+                    value         = searchQuery,
                     onValueChange = { viewModel.setSearchQuery(it) },
-                    placeholder = { Text("Cari menu...") },
-                    leadingIcon  = { Icon(Icons.Default.Search, null) },
-                    trailingIcon = {
+                    placeholder   = { Text("Cari menu...") },
+                    leadingIcon   = { Icon(Icons.Default.Search, null) },
+                    trailingIcon  = {
                         if (searchQuery.isNotBlank()) {
                             IconButton(onClick = { viewModel.setSearchQuery("") }) {
                                 Icon(Icons.Default.Clear, "Hapus")
@@ -97,49 +113,73 @@ fun HomeScreen(
                         }
                     },
                     singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)
+                    shape      = RoundedCornerShape(12.dp),
+                    modifier   = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
                 )
             }
 
-            // Banner Promo
+            // ── Banner Promo ────────────────────────────────────────
             item {
                 Card(
-                    modifier = Modifier.fillMaxWidth().height(120.dp).padding(horizontal = 16.dp),
-                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .padding(horizontal = 16.dp),
+                    shape  = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer
                     )
                 ) {
                     Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
                         Column {
-                            Text("🎉 Promo Hari Ini!", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                            Text("Beli 10 pcs gohyong gratis minuman", fontSize = 13.sp,
-                                color = MaterialTheme.colorScheme.onTertiaryContainer)
+                            Text(
+                                "🎉 Promo Hari Ini!",
+                                fontWeight = FontWeight.Bold,
+                                fontSize   = 16.sp
+                            )
+                            Text(
+                                "Beli 10 pcs gohyong gratis minuman",
+                                fontSize = 13.sp,
+                                color    = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
                             Spacer(Modifier.height(8.dp))
-                            Text("Berlaku sampai jam 21.00 WIB", fontSize = 11.sp,
-                                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f))
+                            Text(
+                                "Berlaku sampai jam 21.00 WIB",
+                                fontSize = 11.sp,
+                                color    = MaterialTheme.colorScheme.onTertiaryContainer
+                                    .copy(alpha = 0.7f)
+                            )
                         }
-                        Text("🥟🍜", fontSize = 40.sp, modifier = Modifier.align(Alignment.CenterEnd))
+                        Text(
+                            "🥟🍜",
+                            fontSize = 40.sp,
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                        )
                     }
                 }
                 Spacer(Modifier.height(16.dp))
             }
 
-            // Category Filter
+            // ── Category Filter ─────────────────────────────────────
             item {
-                Text("Kategori", fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp))
+                Text(
+                    "Kategori",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize   = 14.sp,
+                    modifier   = Modifier.padding(horizontal = 16.dp)
+                )
                 Spacer(Modifier.height(8.dp))
                 LazyRow(
-                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    contentPadding        = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     item {
                         FilterChip(
                             selected = selectedCategory == null,
-                            onClick = { viewModel.setCategory(null) },
-                            label = { Text("Semua") }
+                            onClick  = { viewModel.setCategory(null) },
+                            label    = { Text("Semua") }
                         )
                     }
                     items(viewModel.allCategories) { cat ->
@@ -153,38 +193,54 @@ fun HomeScreen(
                 Spacer(Modifier.height(16.dp))
             }
 
-            // Best Sellers
+            // ── Best Sellers ────────────────────────────────────────
             if (selectedCategory == null && searchQuery.isBlank() && bestSellers.isNotEmpty()) {
                 item {
-                    Text("🌟 Terlaris", fontWeight = FontWeight.Bold, fontSize = 16.sp,
-                        modifier = Modifier.padding(horizontal = 16.dp))
+                    Text(
+                        "🌟 Terlaris",
+                        fontWeight = FontWeight.Bold,
+                        fontSize   = 16.sp,
+                        modifier   = Modifier.padding(horizontal = 16.dp)
+                    )
                     Spacer(Modifier.height(8.dp))
                 }
                 items(bestSellers.take(3)) { item ->
                     MenuItemCard(
-                        item        = item,
-                        onAddToCart = { viewModel.addToCart(item) },
-                        onItemClick = { onNavigateToDetail(item.id) },
+                        item         = item,
+                        onAddToCart  = { viewModel.addToCart(item) },
+                        onItemClick  = { onNavigateToDetail(item.id) },
                         isBestSeller = true
                     )
                 }
                 item {
-                    Divider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-                    Text("📋 Semua Menu", fontWeight = FontWeight.Bold, fontSize = 16.sp,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                    Text(
+                        "📋 Semua Menu",
+                        fontWeight = FontWeight.Bold,
+                        fontSize   = 16.sp,
+                        modifier   = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                    )
                 }
             }
 
-            // Menu List
+            // ── Menu List ───────────────────────────────────────────
             if (filteredMenu.isEmpty()) {
                 item {
-                    Box(modifier = Modifier.fillMaxWidth().padding(40.dp),
-                        contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(40.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text("🔍", fontSize = 40.sp)
                             Spacer(Modifier.height(8.dp))
-                            Text("Menu tidak ditemukan",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(
+                                "Menu tidak ditemukan",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                 }
@@ -203,9 +259,9 @@ fun HomeScreen(
 
 @Composable
 fun MenuItemCard(
-    item: MenuItem,
-    onAddToCart: () -> Unit,
-    onItemClick: () -> Unit,
+    item:         MenuItem,
+    onAddToCart:  () -> Unit,
+    onItemClick:  () -> Unit,
     isBestSeller: Boolean = false
 ) {
     Card(
@@ -213,11 +269,14 @@ fun MenuItemCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
             .clickable(onClick = onItemClick),
-        shape = RoundedCornerShape(12.dp),
+        shape     = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            // ← Emoji sebagai gambar, tidak perlu AsyncImage / Storage
+        Row(
+            modifier          = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // ── Emoji Gambar ────────────────────────────────────────
             Box(
                 modifier = Modifier
                     .size(72.dp)
@@ -245,45 +304,63 @@ fun MenuItemCard(
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        item.name, fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
-                        maxLines = 1, overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
+                        text       = item.name,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize   = 14.sp,
+                        maxLines   = 1,
+                        overflow   = TextOverflow.Ellipsis,
+                        modifier   = Modifier.weight(1f)
                     )
                     Spacer(Modifier.width(4.dp))
-                    Text("⭐ ${item.rating}", fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        "⭐ ${item.rating}",
+                        fontSize = 11.sp,
+                        color    = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
                 Spacer(Modifier.height(2.dp))
-                Text(item.description, fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(
+                    text     = item.description,
+                    fontSize = 12.sp,
+                    color    = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
                 Spacer(Modifier.height(4.dp))
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment   = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier            = Modifier.fillMaxWidth()
                 ) {
                     Column {
                         Text(
                             "Rp ${"%,d".format(item.price).replace(",", ".")}",
-                            fontWeight = FontWeight.Bold, fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.primary
+                            fontWeight = FontWeight.Bold,
+                            fontSize   = 14.sp,
+                            color      = MaterialTheme.colorScheme.primary
                         )
-                        Text(item.portionInfo, fontSize = 10.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            item.portionInfo,
+                            fontSize = 10.sp,
+                            color    = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                     if (item.isAvailable) {
                         FilledTonalButton(
-                            onClick = onAddToCart,
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                            modifier = Modifier.height(32.dp)
+                            onClick         = onAddToCart,
+                            contentPadding  = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                            modifier        = Modifier.height(32.dp)
                         ) {
                             Icon(Icons.Default.Add, null, modifier = Modifier.size(14.dp))
                             Spacer(Modifier.width(4.dp))
                             Text("Tambah", fontSize = 12.sp)
                         }
                     } else {
-                        Text("Habis", fontSize = 11.sp, color = MaterialTheme.colorScheme.error)
+                        Text(
+                            "Habis",
+                            fontSize = 11.sp,
+                            color    = MaterialTheme.colorScheme.error
+                        )
                     }
                 }
             }

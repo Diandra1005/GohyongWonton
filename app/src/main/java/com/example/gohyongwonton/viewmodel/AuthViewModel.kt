@@ -30,6 +30,7 @@ class AuthViewModel(
     val isLoggedIn: Boolean      get() = authRepo.isLoggedIn
     val currentUserId: String?   get() = authRepo.currentUserId
     val currentUserName: String? get() = authRepo.currentUserName
+    val currentUserEmail: String? get() = authRepo.currentUserEmail  // ← tambahan
 
     init {
         val user = authRepo.currentUser

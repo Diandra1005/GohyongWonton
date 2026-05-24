@@ -25,8 +25,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             GohyongWontonTheme {
-                Surface(modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color    = MaterialTheme.colorScheme.background
+                ) {
                     GohyongWontonApp()
                 }
             }
@@ -40,20 +42,20 @@ fun GohyongWontonApp() {
     val navController = rememberNavController()
     val scope         = rememberCoroutineScope()
 
-    // Repositories
+    // ── Repositories ───────────────────────────────────────────────────
     val authRepo  = remember { AuthRepository(context) }
     val cartRepo  = remember { CartRepository() }
     val orderRepo = remember { RealtimeOrderRepository() }
     val menuRepo  = remember { RealtimeMenuRepository() }
 
-    // ViewModels
+    // ── ViewModels ──────────────────────────────────────────────────────
     val authVM     = remember { AuthViewModel(authRepo) }
     val homeVM     = remember { HomeViewModel(menuRepo = menuRepo, cartRepo = cartRepo) }
     val cartVM     = remember { CartViewModel(cartRepo = cartRepo) }
     val checkoutVM = remember { CheckoutViewModel(cartRepo = cartRepo, orderRepo = orderRepo) }
     val orderVM    = remember { OrderViewModel(orderRepo = orderRepo) }
 
-    // Seed data awal ke Realtime Database (hanya sekali jika kosong)
+    // ── Seed data awal ke Realtime Database ────────────────────────────
     LaunchedEffect(Unit) {
         scope.launch { RealtimeDatabaseSeeder.seedMenuIfEmpty() }
     }
@@ -64,7 +66,7 @@ fun GohyongWontonApp() {
 
     NavHost(navController = navController, startDestination = startDest) {
 
-        // ── Login ──────────────────────────────────────────────────
+        // ── Login ───────────────────────────────────────────────────────
         composable(Screen.Login.route) {
             LoginScreen(
                 viewModel      = authVM,
@@ -76,20 +78,21 @@ fun GohyongWontonApp() {
             )
         }
 
-        // ── Home ───────────────────────────────────────────────────
+        // ── Home ────────────────────────────────────────────────────────
         composable(Screen.Home.route) {
             LaunchedEffect(authVM.currentUserId) {
                 authVM.currentUserId?.let { orderVM.loadOrders(it) }
             }
             HomeScreen(
-                viewModel          = homeVM,
-                onNavigateToCart   = { navController.navigate(Screen.Cart.route) },
-                onNavigateToDetail = { id -> navController.navigate(Screen.Detail.createRoute(id)) },
-                onNavigateToOrders = { navController.navigate(Screen.OrderList.route) }
+                viewModel           = homeVM,
+                onNavigateToCart    = { navController.navigate(Screen.Cart.route) },
+                onNavigateToDetail  = { id -> navController.navigate(Screen.Detail.createRoute(id)) },
+                onNavigateToOrders  = { navController.navigate(Screen.OrderList.route) },
+                onNavigateToProfile = { navController.navigate(Screen.Profile.route) }  // ← tambahan
             )
         }
 
-        // ── Cart ───────────────────────────────────────────────────
+        // ── Cart ────────────────────────────────────────────────────────
         composable(Screen.Cart.route) {
             CartScreen(
                 viewModel  = cartVM,
@@ -98,7 +101,7 @@ fun GohyongWontonApp() {
             )
         }
 
-        // ── Checkout ───────────────────────────────────────────────
+        // ── Checkout ────────────────────────────────────────────────────
         composable(Screen.Checkout.route) {
             CheckoutScreen(
                 viewModel     = checkoutVM,
@@ -113,11 +116,11 @@ fun GohyongWontonApp() {
             )
         }
 
-        // ── Order Success ──────────────────────────────────────────
+        // ── Order Success ───────────────────────────────────────────────
         composable(Screen.OrderSuccess.route) { backStackEntry ->
             val orderId   = backStackEntry.arguments?.getString("orderId") ?: ""
             val lastOrder by checkoutVM.lastOrder.collectAsState()
-            val order = lastOrder ?: orderVM.getOrder(orderId)
+            val order     = lastOrder ?: orderVM.getOrder(orderId)
 
             OrderSuccessScreen(
                 order        = order,
@@ -134,7 +137,7 @@ fun GohyongWontonApp() {
             )
         }
 
-        // ── Order List ─────────────────────────────────────────────
+        // ── Order List ──────────────────────────────────────────────────
         composable(Screen.OrderList.route) {
             LaunchedEffect(authVM.currentUserId) {
                 authVM.currentUserId?.let { orderVM.loadOrders(it) }
@@ -145,7 +148,20 @@ fun GohyongWontonApp() {
             )
         }
 
-        // ── Detail (placeholder) ───────────────────────────────────
+        // ── Profile ─────────────────────────────────────────────────────
+        composable(Screen.Profile.route) {
+            ProfileScreen(
+                viewModel = authVM,
+                onBack    = { navController.popBackStack() },
+                onLogout  = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(0) { inclusive = true }   // bersihkan seluruh back stack
+                    }
+                }
+            )
+        }
+
+        // ── Detail (placeholder) ─────────────────────────────────────────
         composable(Screen.Detail.route) {
             LaunchedEffect(Unit) { navController.popBackStack() }
         }
